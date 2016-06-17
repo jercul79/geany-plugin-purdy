@@ -1,7 +1,5 @@
-# geany-plugin-purdy
-
 ## Purdy plugin
-This linux only geany plugin puts a tree browser on the sidebar. 
+This linux only Geany plugin puts a tree browser on the sidebar. 
 
 ## Features 
 * The SVN revision of the files listed in the sidebar
