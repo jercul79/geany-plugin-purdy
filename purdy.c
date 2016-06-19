@@ -51,7 +51,9 @@ static int delete_no = 0;
 static GtkTreeViewColumn 	*treeview_column_text;
 static GtkCellRenderer 		*render_icon, *render_text;
 pthread_mutex_t svn_cache_mutex = PTHREAD_MUTEX_INITIALIZER;
-const gchar backupcopy_backup_dir[] = "/home/harmanci/backups";
+
+const gchar backupcopy_backup_dir[] = DEF_BACKUP_DIR;
+const gchar project_dir[] = DEF_PROJECT_DIR;
 
 /* ------------------
  * FLAGS
@@ -332,7 +334,7 @@ _gtk_cell_layout_get_cells(GtkTreeViewColumn *column)
  * PROTOTYPES
  * ------------------ */
 
-static void 	treebrowser_browse2(gchar *directory, gpointer parent);
+static void 	treebrowser_browse2(const gchar *directory, gpointer parent);
 static void 	gtk_tree_store_iter_clear_nodes(gpointer iter, gboolean delete_root);
 static void 	treebrowser_rename_current(void);
 static void 	load_settings(void);
@@ -351,7 +353,7 @@ static gchar *backup_create_dir_parts(const gchar *filename)
 		return g_strdup ( "" );
 
 	// if the file is in the project space already, skip the 
-	if ( strncmp ( dirname, "/home/harmanci/projects/", 24 ) != 0 )
+	if ( strncmp ( dirname, project_dir, strlen(project_dir) ) != 0 )
 	{
 		parts = g_strdup ( "__non_project__" );
 	}
@@ -611,7 +613,7 @@ static GList *get_expanded_uris ( )
 	return uris;
 }
 
-static GdkPixbuf *get_pixbuf ( gchar *uri, const gchar *state, int unsafe )
+static GdkPixbuf *get_pixbuf ( const gchar *uri, const gchar *state, int unsafe )
 {
 	gboolean is_dir = g_file_test ( uri, G_FILE_TEST_IS_DIR );
 
@@ -755,7 +757,7 @@ static void svn_recheck_uri ( const char *uri )
 	{
 		g_print ( "Rechecking: (%s)", cur );
 
-		if ( strncmp ( cur, "/home/harmanci/projects", strlen("/home/harmanci/projects") ) != 0 )
+		if ( strncmp ( cur, project_dir, strlen(project_dir) ) != 0 )
 		{
 			g_print ( "Not in the projects. Skipping svn_recheck\n" );
 			break;
@@ -972,9 +974,6 @@ check_hidden(const gchar *filename)
 static gchar*
 get_default_dir(void)
 {
-	//static gchar path[] = "/home/harmanci/projects";
-	//return path;
-
 	gchar 			*dir;
 	GeanyProject 	*project 	= geany->app->project;
 	GeanyDocument	*doc 		= document_get_current();
@@ -1047,7 +1046,7 @@ treebrowser_checkdir(gchar *directory)
 static void
 treebrowser_chroot(const gchar *dir)
 {
-	dir = g_strdup ( _("/home/harmanci/projects/") );
+	dir = g_strdup ( project_dir );
 
 	gchar *directory;
 
@@ -1071,7 +1070,7 @@ treebrowser_chroot(const gchar *dir)
 	treebrowser_browse2(addressbar_last_address, NULL);
 }
 
-static void treebrowser_browse ( gchar *in_directory, gpointer parent, GList *expanded_uris )
+static void treebrowser_browse ( const gchar *in_directory, gpointer parent, GList *expanded_uris )
 {
 	GtkTreeIter 	iter, iter_empty, *last_dir_iter = NULL;
 	gboolean 		is_dir;
@@ -1235,7 +1234,7 @@ static void treebrowser_browse ( gchar *in_directory, gpointer parent, GList *ex
 	g_free ( directory );
 }
 
-static void treebrowser_browse2 ( gchar *directory, gpointer parent )
+static void treebrowser_browse2 ( const gchar *directory, gpointer parent )
 {
 	GList *expanded_uris = get_expanded_uris ( );
 	treebrowser_browse ( directory, parent, expanded_uris );
@@ -1542,7 +1541,7 @@ static void on_menu_delete(GtkMenuItem *menuitem, gpointer *user_data)
 		g_free ( uri );
 	}
 
-	treebrowser_browse2 ( _("/home/harmanci/projects/"), NULL);
+	treebrowser_browse2 ( project_dir, NULL);
 	g_list_free ( uris );
 }
 
@@ -1602,7 +1601,7 @@ static void on_menu_rename ( GtkMenuItem *menuitem, gpointer *user_data )
 		break;
 	}
 
-	treebrowser_browse2 ( _("/home/harmanci/projects/"), NULL);
+	treebrowser_browse2 ( project_dir, NULL);
 	g_list_free ( uris );
 }
 
@@ -1894,7 +1893,7 @@ static void on_menu_create_new_object(GtkMenuItem *menuitem, const gchar *type)
 	}
 	else
 	{
-		uri = g_strdup ( "/home/harmanci/projects/" );
+		uri = g_strdup ( project_dir );
 	}
 
 	gchar *new_name = dialogs_show_input ( "Enter name", NULL, "New name", "" );
@@ -2804,7 +2803,7 @@ void *inotify_watcher_function ( void *inp )
 	FD_ZERO( &watch_set );
 	FD_SET ( fd, &watch_set );
 //	int wd = 
-	inotify_add_watch( fd, "/home/harmanci/projects", WATCH_FLAGS );
+	inotify_add_watch( fd, project_dir, WATCH_FLAGS );
 	char buffer[ EVENT_BUF_LEN ];
 
 	while ( 1 )
