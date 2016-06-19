@@ -11,7 +11,9 @@ This linux only Geany plugin puts a tree browser on the sidebar.
 ## Build and Install
 
 ```
-gcc -c purdy.c -fPIC `pkg-config --cflags geany`
+gcc -c purdy.c -fPIC `pkg-config --cflags geany` \
+   -D 'DEF_PROJECT_DIR="/home/user/projects/"' \
+   -D 'DEF_BACKUP_DIR="/home/user/backups/"'
 gcc purdy.o -o purdy.so -shared `pkg-config --libs geany` 
 sudo cp purdy.so /usr/lib64/geany/
 ```
