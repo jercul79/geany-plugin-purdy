@@ -16,7 +16,7 @@ Build the dynamic link library
 make
 ```
 
-Copy the generated .so to geany's plugin location.
+Copy the generated .so to Geany's plugin location.
 
 ```
 make install
