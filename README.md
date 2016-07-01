@@ -1,12 +1,14 @@
 ## Purdy plugin
-This linux only Geany plugin puts a tree browser on the sidebar. 
+This linux only Geany plugin provides 
 
-## Features 
-* The SVN revision of the files listed in the sidebar
-* SVN revisions are tracked by a separate thread and updated whenever there is a change.
-* SVN decorations are overlayed on the files (modeled after Eclipse's decorators)
+* an SVN integrated tree browser on the sidebar. 
+* The SVN revision of the files listed in the sidebar.
+* SVN revisions are tracked by a separate thread. Responsiveness is top priority.
+* SVN decorations are overlayed on the files (modeled after Eclipse's decorators).
 * Multi select on the sidebar and activate Meld for diff.
 * A local history is tracked after every Save.
+
+Modeled after the original treebrowser and filebackup plugins.
 
 ## Build and Install
 
